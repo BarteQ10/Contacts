@@ -21,7 +21,38 @@ public partial class EditContactPage : ContentPage
         set 
         {
             _contact = ContactRepository.GetContactById(int.Parse(value));
-            lblName.Text = _contact.Name;
+            if( _contact != null )
+            {
+                entryName.Text = _contact.Name;
+                entryAddress.Text = _contact.Address;
+                entryEmail.Text = _contact.Email;
+                entryPhone.Text = _contact.Phone;
+            }
+            
         }
+    }
+
+    private void btnUpdate_Clicked(object sender, EventArgs e)
+    {
+        if (nameValidator.IsNotValid)
+        {
+            DisplayAlert("Error", "Name is required", "Ok");
+            return;
+        }
+        if (emailValidator.IsNotValid)
+        {
+            foreach(var error in emailValidator.Errors)
+            {
+                DisplayAlert("Error", error.ToString(), "Ok");
+            }
+            return;
+        }
+
+        _contact.Name = entryName.Text;
+        _contact.Address = entryAddress.Text;
+        _contact.Email = entryEmail.Text;
+        _contact.Phone = entryPhone.Text;
+        ContactRepository.UpdateContact(_contact.ContactId, _contact);
+        Shell.Current.GoToAsync($"//{nameof(ContactsPage)}");
     }
 }
