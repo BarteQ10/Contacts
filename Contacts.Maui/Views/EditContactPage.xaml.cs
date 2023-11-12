@@ -23,10 +23,10 @@ public partial class EditContactPage : ContentPage
             _contact = ContactRepository.GetContactById(int.Parse(value));
             if( _contact != null )
             {
-                entryName.Text = _contact.Name;
-                entryAddress.Text = _contact.Address;
-                entryEmail.Text = _contact.Email;
-                entryPhone.Text = _contact.Phone;
+                contactCtrl.Name = _contact.Name;
+                contactCtrl.Address = _contact.Address;
+                contactCtrl.Email = _contact.Email;
+                contactCtrl.Phone = _contact.Phone;
             }
             
         }
@@ -34,25 +34,18 @@ public partial class EditContactPage : ContentPage
 
     private void btnUpdate_Clicked(object sender, EventArgs e)
     {
-        if (nameValidator.IsNotValid)
-        {
-            DisplayAlert("Error", "Name is required", "Ok");
-            return;
-        }
-        if (emailValidator.IsNotValid)
-        {
-            foreach(var error in emailValidator.Errors)
-            {
-                DisplayAlert("Error", error.ToString(), "Ok");
-            }
-            return;
-        }
 
-        _contact.Name = entryName.Text;
-        _contact.Address = entryAddress.Text;
-        _contact.Email = entryEmail.Text;
-        _contact.Phone = entryPhone.Text;
+
+        _contact.Name = contactCtrl.Name;
+        _contact.Address = contactCtrl.Address;
+        _contact.Email = contactCtrl.Email;
+        _contact.Phone = contactCtrl.Phone;
         ContactRepository.UpdateContact(_contact.ContactId, _contact);
         Shell.Current.GoToAsync($"//{nameof(ContactsPage)}");
+    }
+
+    private void contactCtrl_OnError(object sender, string e)
+    {
+        DisplayAlert("Error", e, "Ok");
     }
 }

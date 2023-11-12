@@ -45,5 +45,42 @@ namespace Contacts.Maui.Models
                 contactToUpdate.Phone = contact.Phone;
             }
         }
+
+        public static void AddContact(Contact contact)
+        {
+            var maxId = _contacts.Max(x => x.ContactId);
+            contact.ContactId = maxId;
+            _contacts.Add(contact);
+        }
+
+        public static void DeleteContact(int contactId)
+        {
+            var contact = _contacts.FirstOrDefault(x => x.ContactId == contactId);
+            if( contact != null )
+            {
+                _contacts.Remove(contact);
+            }
+        }
+
+        public static List<Contact> SearchContacts(string filterText)
+        {
+            var contacts = _contacts.Where(x => !string.IsNullOrWhiteSpace(x.Name) && x.Name.Contains(filterText, StringComparison.OrdinalIgnoreCase)).ToList();
+            if( contacts.Count <= 0 || contacts == null)
+                contacts = _contacts.Where(x => !string.IsNullOrWhiteSpace(x.Email) && x.Email.Contains(filterText, StringComparison.OrdinalIgnoreCase)).ToList();
+            else
+                return contacts;
+
+            if (contacts.Count <= 0 || contacts == null)
+                contacts = _contacts.Where(x => !string.IsNullOrWhiteSpace(x.Phone) && x.Phone.Contains(filterText, StringComparison.OrdinalIgnoreCase)).ToList();
+            else
+                return contacts;
+
+            if (contacts.Count <= 0 || contacts == null)
+                contacts = _contacts.Where(x => !string.IsNullOrWhiteSpace(x.Address) && x.Address.Contains(filterText, StringComparison.OrdinalIgnoreCase)).ToList();
+            else
+                return contacts;
+
+            return contacts;
+        }
     }
 }
